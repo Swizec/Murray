@@ -1,0 +1,13 @@
+Murray is a[n esoteric] programming language named after the talking demonic skull in Monkey Island
+
+some notes on design principles:
+
+the compiler must be written in murray (eventually)
+
+murray compiles to python
+
+murray is a lisp for python
+
+but without the parentheses
+
+the code should be short and succint, but not so much as golfscript, the idea is elegance (and funniness)
