@@ -3,28 +3,50 @@ import sys, os
 
 import parsers
 
+TRANSLATIONS = {'.': 'dot'}
+
 def parse(code):
     arguments = []
     string = []
     in_string = False
+    dont_pass = False
+    lines = []
+
+    def _parse(element):
+        try:
+            parser = getattr(parsers, element)
+            return [parser.main(arguments)]
+        except AttributeError:
+            try:
+                return _parse(TRANSLATIONS[element])
+            except KeyError:
+                return arguments+[element]
+
     for element in code:
+        if element == '':
+            lines += arguments
+            arguments = []
+            continue
+
+        if element[-1:] in TRANSLATIONS.keys() and not in_string:
+            arguments = _parse(element[-1:])
+            element = element[:-1]
+
         if element[-1:] == '"':
             in_string = True
         
         if not in_string:
-            try:
-                parser = getattr(parsers, element)
-                arguments = [parser.main(arguments)]
-            except AttributeError:
-                arguments.append(element)
+            arguments = _parse(element)
         else:
             string.append(element)
             if element[0] == '"':
                 in_string = False
                 arguments.append(' '.join([word for word in reversed(string)]))
                 string = []
+
+    lines += arguments
         
-    return arguments
+    return reversed(lines)
 
 def compile(source, target=None):
     f = file(source, 'r')
