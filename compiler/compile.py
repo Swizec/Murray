@@ -51,7 +51,7 @@ def parse(code):
 def compile(source, target=None):
     f = file(source, 'r')
 
-    code = reversed(reduce(lambda a,b: a+b.strip().split(' '), f, []))
+    code = reversed(reduce(lambda a,b: a+b.strip().split(' ') if b[0] != '#' else a, f, []))
     result = parse(code)
 
     f.close()

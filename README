@@ -11,3 +11,20 @@ murray is a lisp for python
 but without the parentheses
 
 the code should be short and succint, but not so much as golfscript, the idea is elegance (and funnines)
+
+####
+TODO
+####
+
+Need to change direction of code parsing
+must make stuff more rebolish in the sense that functions only expect so many params
+
+
+
+#####
+Language Spec
+####
+
+This is where the language specifications go as I think of them
+
+Lines starting with # are ignored (comments)
