@@ -1,2 +1,9 @@
 
+# prints Hello World'nohai!None
 say "ohai!" say "Hello World"
+
+# prints Hello World\nohai!
+say "ohai!". say "Hello World"
+
+# prints "meow" in new line
+say "meow"

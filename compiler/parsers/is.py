@@ -1,3 +1,5 @@
 
-def main(args):
-    return 'True if %s else False' % args
+N_ARGS = 1
+
+def main(arg):
+    return 'True if %s else False' % arg

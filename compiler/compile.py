@@ -5,55 +5,12 @@ import parsers
 
 TRANSLATIONS = {'.': 'dot'}
 
-#def parse(code):
-#    arguments = []
-#    string = []
-#    in_string = False
-#    dont_pass = False
-#    lines = []
-
-#    def _parse(element):
-#        try:
-#            parser = getattr(parsers, element)
-#            return [parser.main(arguments)]
-#        except AttributeError:
-#            try:
-#                return _parse(TRANSLATIONS[element])
-#            except KeyError:
-#                return arguments+[element]
-
-#    for element in code:
-#        if element == '':
-#            lines += arguments
-#            arguments = []
-#            continue
-
-#        if element[-1:] in TRANSLATIONS.keys() and not in_string:
-#            arguments = _parse(element[-1:])
-#            element = element[:-1]
-
-#        if element[-1:] == '"':
-#            in_string = True
-        
-#        if not in_string:
-#            arguments = _parse(element)
-#        else:
-#            string.append(element)
-#            if element[0] == '"':
-#                in_string = False
-#                arguments.append(' '.join([word for word in reversed(string)]))
-#                string = []
-
-#    lines += arguments
-        
-#    return reversed(lines)
-
 def parse(code):
     def _string(code):
         s = []
         for word in code:
             s.append(word)
-            if word[-1:] == '"':
+            if word[-1:] == '"'or word[-2:][0] == '"':
                 return (' '.join(s), len(s))
         raise ParsingError("Unterminated string")
 
@@ -62,6 +19,12 @@ def parse(code):
 
         if n == 'Inf':
             n = len(code)
+
+        def _parse(i):
+            (args, offset) = _consume(code[i+1:], parser.N_ARGS)
+            i += offset
+            element = parser.main(args)
+            return (element, i)
 
         i = 0
         while i < n:
@@ -72,16 +35,23 @@ def parse(code):
             
             if element[0] == '"':
                 (element, offset) = _string(code[i:])
-                i += offset
+                i += offset-1
+
+            if element[-1:] in TRANSLATIONS.keys():
+                stack.append(element[:-1])
+                element = element[-1:]
 
             try:
                 parser = getattr(parsers, element)
             except AttributeError:
-                pass
+                try:
+                    parser = getattr(parsers, TRANSLATIONS[element])
+                except (AttributeError, KeyError):
+                    pass
+                else:
+                    (element, i) = _parse(i)
             else:
-                (args, offset) = _consume(code[i+1:], parser.N_ARGS)
-                i += offset
-                element = parser.main(args)
+                (element, i ) = _parse(i)
 
             stack.append(element)
             i += 1
