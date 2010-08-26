@@ -7,3 +7,6 @@ say "ohai!". say "Hello World"
 
 # prints "meow" in new line
 say "meow"
+
+# raises a ParsingError
+#say "hai
