@@ -1,0 +1,24 @@
+
+# prints False
+say isnt "meow"
+
+# prints True
+say isnt 0
+
+# prints False
+say isnt= "meow" "meow"
+
+# prints False
+say isnt> 1 0
+
+# prints False
+say isnt< 0 1
+
+# prints True
+say isnt= "meo" "meow"
+
+# prints True
+say isnt> 0 1
+
+# prints True
+say isnt< 1 0

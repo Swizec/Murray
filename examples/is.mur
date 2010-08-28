@@ -1,4 +1,27 @@
 
-say is "meow" " " "hai"
+# prints True
+say is "meow"
 
-say "meow" " " "mrow"
+# prints False
+say is 0
+
+# prints True
+say is= "meow" "meow"
+
+# prints True
+say is> 1 0
+
+# prints True
+say is< 0 1
+
+# prints False
+say is= "meo" "meow"
+
+# prints False
+say is> 0 1
+
+# prints False
+say is< 1 0
+
+# of course this also works
+say > 1 0

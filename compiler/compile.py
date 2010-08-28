@@ -3,7 +3,10 @@ import sys, os
 
 import parsers
 
-TRANSLATIONS = {'.': 'dot'}
+TRANSLATIONS = {'.': 'dot',
+                '=': 'equals',
+                '>': 'greater_than',
+                '<': 'less_than'}
 
 def parse(code):
     def _string(code):
@@ -14,14 +17,14 @@ def parse(code):
                 return (' '.join(s), len(s))
         raise ParsingError("Unterminated string")
 
-    def _consume(code, n):
+    def _consume(code, n, depth=0):
         stack = []
 
         if n == 'Inf':
             n = len(code)
 
         def _parse(i):
-            (args, offset) = _consume(code[i+1:], parser.N_ARGS)
+            (args, offset) = _consume(code[i+1:], parser.N_ARGS, depth+1)
             i += offset
             element = parser.main(args)
             return (element, i)
@@ -32,14 +35,10 @@ def parse(code):
 
             if element == '':
                 return (stack, i)
-            
+
             if element[0] == '"':
                 (element, offset) = _string(code[i:])
                 i += offset-1
-
-            if element[-1:] in TRANSLATIONS.keys():
-                stack.append(element[:-1])
-                element = element[-1:]
 
             try:
                 parser = getattr(parsers, element)
@@ -71,13 +70,14 @@ def compile(source, target=None):
     f = file(source, 'r')
 
     code = reduce(lambda a,b: a+b.strip().split(' ') if b[0] != '#' else a, f, [])
+    code = reduce(lambda a,b: a+[b[:-1],b[-1:]] if b[-1:] in TRANSLATIONS.keys() and len(b)>1 else a+[b],
+                  code, [])
     result = parse(code)
 
     f.close()
 
     if target == None:
         target = '/'.join([os.getcwd(), '.'.join([source.rsplit('/', 1)[1], 'py'])])
-
 
     save(result, target)
 
