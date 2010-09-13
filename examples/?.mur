@@ -1,0 +1,9 @@
+
+# this outputs "same"
+is= "meow" "meow" ? say "same"
+
+# this doesn't output anything
+is= "meow" "moo" ? say "same"
+
+# the syntax for else still needs to be implemented; 
+# the problem seems to be with the basic compiler

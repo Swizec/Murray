@@ -6,7 +6,8 @@ import parsers
 TRANSLATIONS = {'.': 'dot',
                 '=': 'equals',
                 '>': 'greater_than',
-                '<': 'less_than'}
+                '<': 'less_than',
+                '?': 'question'}
 
 def parse(code):
     def _string(code):
@@ -26,12 +27,16 @@ def parse(code):
         def _parse(i):
             (args, offset) = _consume(code[i+1:], parser.N_ARGS, depth+1)
             i += offset
-            element = parser.main(args)
-            return (element, i)
+            if parser.STACK:
+                element = parser.main(stack, args)
+            else:
+                element = parser.main(args)
+            return (element, i, parser.STACK)
 
         i = 0
         while i < n:
             element = code[i]
+            replace = False
 
             if element == '':
                 return (stack, i)
@@ -48,11 +53,15 @@ def parse(code):
                 except (AttributeError, KeyError):
                     pass
                 else:
-                    (element, i) = _parse(i)
+                    (element, i, replace) = _parse(i)
             else:
-                (element, i ) = _parse(i)
+                (element, i, replace) = _parse(i)
 
-            stack.append(element)
+            if replace:
+                stack = [element]
+            else:
+                stack.append(element)
+
             i += 1
 
         return (stack, i)

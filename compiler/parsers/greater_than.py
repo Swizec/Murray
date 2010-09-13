@@ -1,5 +1,6 @@
 
 N_ARGS = 2
+STACK = False
 
 def main(args):
     (arg1, arg2) = args
